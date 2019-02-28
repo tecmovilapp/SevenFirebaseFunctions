@@ -1,8 +1,35 @@
 import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+admin.initializeApp();
+
+exports.createRide = functions.firestore
+    .document('rides/{driverId}')
+    .onCreate(async (snap, context) => {
+        const data = snap.data();
+        if (data) {
+            const passengerName = data.passengerName;
+            // Notification content
+            const payload = {
+                notification: {
+                    title: 'Solicitud de Unidad',
+                    body: `El cliente ${passengerName} ha solicitado una Unidad.`,
+                    icon: 'https://goo.gl/Fz9nrQ'
+                }
+            }
+            // ref to the device collection for the user
+            const db = admin.firestore()
+            const devicesRef = db.collection('devices')
+            // get the user's tokens and send notifications
+            const devices = await devicesRef.get();
+            const tokens: any = [];
+            // send a notification to each device token
+            devices.forEach(result => {
+                const token = result.data().token;
+                tokens.push(token)
+            })
+            return admin.messaging().sendToDevice(tokens, payload)
+        }else{
+            return
+        }
+    });
