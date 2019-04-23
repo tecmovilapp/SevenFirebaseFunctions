@@ -28,8 +28,13 @@ exports.createRide = functions.firestore
                 const token = result.data().token;
                 tokens.push(token)
             })
-            return admin.messaging().sendToDevice(tokens, payload)
-        }else{
+            return admin.messaging().sendToDevice(tokens, payload).then((response) => {
+                console.log(response);
+            }).catch((err) => {
+                console.log(err);
+            })
+        } else {
+            console.log("No Data");
             return
         }
     });
