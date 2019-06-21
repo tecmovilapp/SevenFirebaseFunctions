@@ -19,9 +19,11 @@ exports.createRide = functions.firestore
             }
             // ref to the device collection for the user
             const db = admin.firestore()
-            const devicesRef = db.collection('devices')
+            const devicesRef = db.collection('devices');
+            let queryRef = devicesRef.where('userType', '==', 'driver');
             // get the user's tokens and send notifications
-            const devices = await devicesRef.get();
+            //const devices = await devicesRef.get();
+            const devices = await queryRef.get();
             const tokens: any = [];
             // send a notification to each device token
             devices.forEach(result => {
