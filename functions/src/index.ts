@@ -14,7 +14,8 @@ exports.createRide = functions.firestore
                 notification: {
                     title: 'Solicitud de Unidad',
                     body: `El cliente ${passengerName} ha solicitado una Unidad.`,
-                    icon: 'https://goo.gl/Fz9nrQ'
+                    icon: 'https://goo.gl/Fz9nrQ',
+                    sound : 'default'
                 }
             }
             // ref to the device collection for the user
